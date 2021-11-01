@@ -19,7 +19,7 @@ namespace ProjectRimFactory.AutoMachineTool
             var r = base.AllowsPlacing(checkingDef, loc, rot, map, thingToIgnore);
             if (r.Accepted)
             {
-                if (!(new PRF_SAL_Trarget(map,loc,rot,null)).GetTarget(loc,rot))
+                if (new PRF_SAL_Trarget(map,loc,rot,null).Target == PRF_SAL_Trarget.SAL_TargetType.Invalid)
                 {
                     return new AcceptanceReport("PRF.AutoMachineTool.PlaceNotAllowed".Translate());
                 }
