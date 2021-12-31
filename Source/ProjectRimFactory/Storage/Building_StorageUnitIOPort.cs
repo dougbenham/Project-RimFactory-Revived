@@ -169,7 +169,7 @@ namespace ProjectRimFactory.Storage
         public void Notify_NeedRefresh()
         {
             RefreshStoreSettings();
-            switch (IOMode)
+            switch (mode)
             {
                 case StorageIOMode.Input:
                     RefreshInput();
@@ -234,7 +234,7 @@ namespace ProjectRimFactory.Storage
             if (powerComp.PowerOn)
             {
                 Thing item = WorkPosition.GetFirstItem(Map);
-                if (mode == StorageIOMode.Input && item != null && boundStorageUnit != null && boundStorageUnit.settings.AllowedToAccept(item) && boundStorageUnit.CanReceiveIO && boundStorageUnit.CanStoreMoreItems)
+                if (item != null && boundStorageUnit != null && boundStorageUnit.settings.AllowedToAccept(item) && boundStorageUnit.CanReceiveIO && boundStorageUnit.CanStoreMoreItems)
                 {
                     foreach (IntVec3 cell in boundStorageUnit.AllSlotCells())
                     {
@@ -346,7 +346,7 @@ namespace ProjectRimFactory.Storage
                     List<FloatMenuOption> list = new List<FloatMenuOption>(
                         from Building_MassStorageUnit b in Find.CurrentMap.listerBuildings.AllBuildingsColonistOfClass<Building_MassStorageUnit>()
                         where b.def.GetModExtension<DefModExtension_CanUseStorageIOPorts>() != null
-                        select new FloatMenuOption(b.LabelCap, () => SelectedPorts().ToList().ForEach(p => p.BoundStorageUnit = b))
+                        select new FloatMenuOption(b.LabelCap, () => SelectedPorts().ForEach(p => p.BoundStorageUnit = b))
                     );
                     if (list.Count == 0)
                     {
@@ -390,9 +390,9 @@ namespace ProjectRimFactory.Storage
 
         }
 
-        private IEnumerable<Building_StorageUnitIOBase> SelectedPorts()
+        private List<Building_StorageUnitIOBase> SelectedPorts()
         {
-            var l = Find.Selector.SelectedObjects.Where(o => o is Building_StorageUnitIOBase).Select(o => (Building_StorageUnitIOBase)o).ToList();
+            var l = Find.Selector.SelectedObjects.OfType<Building_StorageUnitIOBase>().ToList();
             if (!l.Contains(this))
             {
                 l.Add(this);
@@ -471,7 +471,7 @@ namespace ProjectRimFactory.Storage
             if (powerComp.PowerOn)
             {
                 Thing item = Position.GetFirstItem(Map);
-                if (mode == StorageIOMode.Input && item != null && boundStorageUnit != null && boundStorageUnit.settings.AllowedToAccept(item) && boundStorageUnit.CanReceiveIO && boundStorageUnit.CanStoreMoreItems)
+                if (item != null && boundStorageUnit != null && boundStorageUnit.settings.AllowedToAccept(item) && boundStorageUnit.CanReceiveIO && boundStorageUnit.CanStoreMoreItems)
                 {
                     foreach (IntVec3 cell in boundStorageUnit.AllSlotCells())
                     {
@@ -615,17 +615,17 @@ namespace ProjectRimFactory.Storage
                 {
                     Find.WindowStack.Add(new FloatMenu(new List<FloatMenuOption>()
                     {
-                        new FloatMenuOption("PRFIOInput".Translate(), () => SelectedPorts().ToList().ForEach(p => p.IOMode = StorageIOMode.Input)),
-                        new FloatMenuOption("PRFIOOutput".Translate(), () => SelectedPorts().ToList().ForEach(p => p.IOMode = StorageIOMode.Output))
+                        new FloatMenuOption("PRFIOInput".Translate(), () => SelectedPorts().ForEach(p => p.IOMode = StorageIOMode.Input)),
+                        new FloatMenuOption("PRFIOOutput".Translate(), () => SelectedPorts().ForEach(p => p.IOMode = StorageIOMode.Output))
                     }));
                 },
                 icon = IOModeTex
             };
         }
 
-        private IEnumerable<Building_StorageUnitIOPort> SelectedPorts()
+        private List<Building_StorageUnitIOPort> SelectedPorts()
         {
-            var l = Find.Selector.SelectedObjects.Where(o => o is Building_StorageUnitIOPort).Select(o => (Building_StorageUnitIOPort)o).ToList();
+            var l = Find.Selector.SelectedObjects.OfType<Building_StorageUnitIOPort>().ToList();
             if (!l.Contains(this))
             {
                 l.Add(this);
